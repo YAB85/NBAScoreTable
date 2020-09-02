@@ -1,121 +1,138 @@
-const warriorsGames = [{
-    awayTeam: {
-      team: 'Golden State',
-      points: 119,
-      isWinner: true
-    },
-    homeTeam: {
-      team: 'Houston',
-      points: 106,
-      isWinner: false
-    }
-  },
-  {
-    awayTeam: {
-      team: 'Golden State',
-      points: 105,
-      isWinner: false
-    },
-    homeTeam: {
-      team: 'Houston',
-      points: 127,
-      isWinner: true
-    }
-  },
-  {
-    homeTeam: {
-      team: 'Golden State',
-      points: 126,
-      isWinner: true
-    },
-    awayTeam: {
-      team: 'Houston',
-      points: 85,
-      isWinner: false
-    }
-  },
-  {
-    homeTeam: {
-      team: 'Golden State',
-      points: 92,
-      isWinner: false
-    },
-    awayTeam: {
-      team: 'Houston',
-      points: 95,
-      isWinner: true
-    }
-  },
-  {
-    awayTeam: {
-      team: 'Golden State',
-      points: 94,
-      isWinner: false
-    },
-    homeTeam: {
-      team: 'Houston',
-      points: 98,
-      isWinner: true
-    }
-  },
-  {
-    homeTeam: {
-      team: 'Golden State',
-      points: 115,
-      isWinner: true
-    },
-    awayTeam: {
-      team: 'Houston',
-      points: 86,
-      isWinner: false
-    }
-  },
-  {
-    awayTeam: {
-      team: 'Golden State',
-      points: 101,
-      isWinner: true
-    },
-    homeTeam: {
-      team: 'Houston',
-      points: 92,
-      isWinner: false
-    }
-  }
-]
+const warriorsGames = [
+	{
+		awayTeam: {
+			team: 'Golden State',
+			points: 119,
+			isWinner: true
+		},
+		homeTeam: {
+			team: 'Houston',
+			points: 106,
+			isWinner: false
+		}
+	},
+	{
+		awayTeam: {
+			team: 'Golden State',
+			points: 105,
+			isWinner: false
+		},
+		homeTeam: {
+			team: 'Houston',
+			points: 127,
+			isWinner: true
+		}
+	},
+	{
+		homeTeam: {
+			team: 'Golden State',
+			points: 126,
+			isWinner: true
+		},
+		awayTeam: {
+			team: 'Houston',
+			points: 85,
+			isWinner: false
+		}
+	},
+	{
+		homeTeam: {
+			team: 'Golden State',
+			points: 92,
+			isWinner: false
+		},
+		awayTeam: {
+			team: 'Houston',
+			points: 95,
+			isWinner: true
+		}
+	},
+	{
+		awayTeam: {
+			team: 'Golden State',
+			points: 94,
+			isWinner: false
+		},
+		homeTeam: {
+			team: 'Houston',
+			points: 98,
+			isWinner: true
+		}
+	},
+	{
+		homeTeam: {
+			team: 'Golden State',
+			points: 115,
+			isWinner: true
+		},
+		awayTeam: {
+			team: 'Houston',
+			points: 86,
+			isWinner: false
+		}
+	},
+	{
+		awayTeam: {
+			team: 'Golden State',
+			points: 101,
+			isWinner: true
+		},
+		homeTeam: {
+			team: 'Houston',
+			points: 92,
+			isWinner: false
+		}
+	}
+];
 
-const ulParent = document.createElement('ul');
+/****************** NBA Score table v.1********************/
 
-for (let game of warriorsGames) {
-  const {
-    homeTeam,
-    awayTeam
-  } = game;
-  const gameLi = document.createElement('li');
-  const {
-    team: hTeam,
-    points: hPoints
-  } = homeTeam;
-  const {
-    team: aTeam,
-    points: aPoints
-  } = awayTeam;
+const makeChart = (games, targetTeam) => {
+	const ulParent = document.createElement('ul');
 
-  const teamNames = `${aTeam} @ ${hTeam}`;
-  let scoreLine;
+	for (let game of games) {
+		const { homeTeam, awayTeam } = game;
+		const gameLi = document.createElement('li');
+		gameLi.innerHTML = getScoreLine(game);
+		gameLi.classList.add(isWinner(game, targetTeam) ? 'win' : 'lose');
+		ulParent.appendChild(gameLi);
 
-  if (aPoints > hPoints) {
-    scoreLine = `<b>${aPoints}</b> -- ${hPoints}`;
-  } else {
-    scoreLine = `${aPoints} -- <b>${hPoints}</b>`;
-  }
+		//isWinner(game, targetTeam);
 
-  const warriors = hTeam === 'Golden State' ? homeTeam : awayTeam;
-  gameLi.classList.add(warriors.isWinner ? 'win' : 'lose');
+		//console.log(scoreLine);
+	}
+	return ulParent;
+};
 
-  gameLi.innerHTML = `${teamNames} ${scoreLine}`
-  console.log(scoreLine);
-  ulParent.appendChild(gameLi);
-}
+const isWinner = ({ homeTeam, awayTeam }, targetTeam) => {
+	const target = homeTeam.team === targetTeam ? homeTeam : awayTeam;
+	return target.isWinner;
+};
 
-document.body.prepend(ulParent);
+const getScoreLine = ({ homeTeam, awayTeam }) => {
+	const { team: hTeam, points: hPoints } = homeTeam;
+	const { team: aTeam, points: aPoints } = awayTeam;
+
+	const teamNames = `${aTeam} @ ${hTeam}`;
+	let scoreLine;
+
+	if (aPoints > hPoints) {
+		scoreLine = `<b>${aPoints}</b> -- ${hPoints}`;
+	} else {
+		scoreLine = `${aPoints} -- <b>${hPoints}</b>`;
+	}
+
+	return `${teamNames} ${scoreLine}`;
+};
+
+/****************** NBA Score table v.2 Refactoring code********************/
+const gsSection = document.querySelector('#gs');
+const hrSection = document.querySelector('#hr');
+
+const gsChart = makeChart(warriorsGames, 'Golden State');
+const hrChart = makeChart(warriorsGames, 'Houston');
+gsSection.appendChild(gsChart);
+hrSection.appendChild(hrChart);
+
+//const chart2 = makeChart(warriorsGames);
+//document.body.prepend(chart2);
